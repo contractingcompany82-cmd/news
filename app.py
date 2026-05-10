@@ -1,21 +1,11 @@
 import streamlit as st
 import feedparser
-from datetime import datetime
 
 st.set_page_config(page_title="Auto News RSS", page_icon="📰", layout="wide")
 
 st.title("📰 Auto-Updating RSS News Website")
 
-# Auto refresh every 60 seconds
-st.caption("This page auto-refreshes every 60 seconds.")
-st_autorefresh = st.experimental_rerun if False else None  # placeholder to avoid linting
-
-count = st.experimental_get_query_params().get("refresh", [0])[0]
-count = int(count) if str(count).isdigit() else 0
-
-# Auto-refresh using st_autorefresh
-st_autorefresh = st.experimental_rerun
-st.experimental_set_query_params(refresh=count + 1)
+st.caption("This page auto-refreshes automatically based on the time you set in the sidebar.")
 
 st.sidebar.header("Settings")
 
@@ -26,16 +16,15 @@ rss_url = st.sidebar.text_input(
 
 refresh_seconds = st.sidebar.slider("Auto refresh (seconds)", 30, 300, 60)
 
-st.sidebar.write(f"⏱️ Page refreshes every **{refresh_seconds}** seconds.")
-st.sidebar.caption("Change value and rerun to adjust refresh rate.")
-
-# Simple auto-refresh using meta refresh
+# Simple auto-refresh using HTML meta tag
 st.markdown(
     f"""
     <meta http-equiv="refresh" content="{refresh_seconds}">
     """,
     unsafe_allow_html=True,
 )
+
+st.sidebar.write(f"⏱️ Page refreshes every **{refresh_seconds}** seconds.")
 
 if not rss_url:
     st.warning("Please enter a valid RSS feed URL in the sidebar.")
